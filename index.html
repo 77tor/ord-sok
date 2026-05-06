@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Norsk Ordsøk-Generator</title>
+    <style>
+        /* Laster inn din egen font */
+        @font-face {
+            font-family: 'Skogstavskrift';
+            src: url('skogstavskrift.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        /* Importerer en ren font som ligner på skole-skrift */
+        @import url('https://fonts.googleapis.com/css2?family=Andika&display=swap');
+
+        body { font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; align-items: center; background-color: #f0f2f5; padding: 20px; }
+        .controls { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px; width: 500px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #333; font-size: 14px; }
+        textarea { width: 100%; height: 80px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; padding: 8px; box-sizing: border-box; resize: vertical; }
+        select, input { width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        
+        .button-group { display: flex; gap: 10px; }
+        button { flex: 1; padding: 12px; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; font-weight: bold; }
+        .btn-generate { background-color: #28a745; color: white; }
+        .btn-print { background-color: #007bff; color: white; }
+        
+        /* Dette er selve rutenettet */
+        #grid { 
+            display: grid; 
+            background: white; 
+            padding: 15px; 
+            border: 3px solid #333; 
+            margin-top: 20px; 
+            box-shadow: 0 0 20px rgba(0,0,0,0.05);
+        }
+        
+        /* Cellene styres av JavaScript for font-valg */
+        .cell { 
+            width: 38px; 
+            height: 38px; 
+            border: 1px solid #eee; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-weight: normal;
+            color: #000;
+        }
+        
+        #word-list-container { margin-top: 20px; text-align: center; max-width: 600px; }
+        #word-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin-top: 10px; }
+        .word-item { background: #fff; padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; }
+        
+        @media print {
+            .controls, h1 { display: none; }
+            body { background-color: white !important; background: white !important; }
+            #grid { border: 2px solid black; box-shadow: none; }
+            .word-item { background: white !important; border: 1px solid #000; }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Ordsøk-Generator</h1>
+
+    <div class="controls">
+        <label>Ordliste:</label>
+        <textarea id="word-input" placeholder="Eks: lære, lese, skrive, skole"></textarea>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div>
+                <label>Størrelse (5-25):</label>
+                <input type="number" id="grid-size" value="12">
+            </div>
+            <div>
+                <label>Bokstavtype:</label>
+                <select id="case-style">
+                    <option value="lower">små bokstaver</option>
+                    <option value="upper">STORE BOKSTAVER</option>
+                </select>
+            </div>
+            <div>
+                <label>Velg Font:</label>
+                <select id="font-family">
+                    <option value="'Skogstavskrift', cursive">Skogstavskrift (Din egen)</option>
+                    <option value="'Andika', sans-serif">Andika (Skolevennlig)</option>
+                    <option value="'Courier New', Courier, monospace">Klassisk Monospace</option>
+                    <option value="'Comic Sans MS', cursive">Comic Sans</option>
+                    <option value="Arial, sans-serif">Arial</option>
+                </select>
+            </div>
+            <div>
+                <label>Bokstavstørrelse (px):</label>
+                <input type="number" id="font-size" value="26">
+            </div>
+            <div>
+                <label>Retning:</label>
+                <select id="placement-style">
+                    <option value="all">Alle (H, V, D)</option>
+                    <option value="horizontal">Kun Vannrett</option>
+                    <option value="vertical">Kun Loddrett</option>
+                    <option value="diagonal">Kun Diagonalt</option>
+                </select>
+            </div>
+            <div>
+                <label>Leseretning:</label>
+                <select id="read-direction">
+                    <option value="normal">Kun venstre mot høyre</option>
+                    <option value="both">Valgfritt (begge veier)</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="button-group">
+            <button class="btn-generate" onclick="generatePuzzle()">Lag Ordsøk</button>
+            <button class="btn-print" onclick="window.print()">Skriv ut</button>
+        </div>
+    </div>
+
+    <div id="grid"></div>
+    <div id="word-list-container">
+        <h3>Finn disse ordene:</h3>
+        <div id="word-list"></div>
+    </div>
+
+    <script>
+        const ALPHA_UPPER = "ABCDEFGHIJKLMNOPQRSTUVWXYZÆØÅ";
+        const ALPHA_LOWER = "abcdefghijklmnopqrstuvwxyzæøå";
+
+        function generatePuzzle() {
+            const rawInput = document.getElementById('word-input').value;
+            const size = parseInt(document.getElementById('grid-size').value);
+            const caseStyle = document.getElementById('case-style').value;
+            const selectedFont = document.getElementById('font-family').value;
+            const fontSize = document.getElementById('font-size').value + "px";
+            const placementStyle = document.getElementById('placement-style').value;
+            const readDirection = document.getElementById('read-direction').value;
+            
+            const gridElement = document.getElementById('grid');
+            const wordListElement = document.getElementById('word-list');
+            
+            let words = rawInput.split(/[\s,]+/).filter(w => w.length > 0)
+                                .map(w => caseStyle === 'upper' ? w.toUpperCase() : w.toLowerCase());
+
+            if (words.length === 0) return;
+
+            let grid = Array(size).fill().map(() => Array(size).fill(''));
+
+            words.forEach(word => {
+                // Sjekk leseretning og snu ordet tilfeldig hvis valgt
+                let wordToPlace = word;
+                if (readDirection === 'both' && Math.random() > 0.5) {
+                    wordToPlace = word.split('').reverse().join('');
+                }
+
+                let placed = false;
+                let attempts = 0;
+                while (!placed && attempts < 200) {
+                    let dir;
+                    if (placementStyle === 'horizontal') dir = 0;
+                    else if (placementStyle === 'vertical') dir = 1;
+                    else if (placementStyle === 'diagonal') dir = 2;
+                    else dir = Math.floor(Math.random() * 3); // 0=V, 1=L, 2=D
+
+                    let r = Math.floor(Math.random() * size);
+                    let c = Math.floor(Math.random() * size);
+                    
+                    if (canPlace(grid, wordToPlace, r, c, dir, size)) {
+                        placeWord(grid, wordToPlace, r, c, dir);
+                        placed = true;
+                    }
+                    attempts++;
+                }
+            });
+
+            const activeAlphabet = caseStyle === 'upper' ? ALPHA_UPPER : ALPHA_LOWER;
+
+            for (let r = 0; r < size; r++) {
+                for (let c = 0; c < size; c++) {
+                    if (grid[r][c] === '') {
+                        grid[r][c] = activeAlphabet[Math.floor(Math.random() * activeAlphabet.length)];
+                    }
+                }
+            }
+
+            gridElement.style.gridTemplateColumns = `repeat(${size}, 42px)`;
+            gridElement.innerHTML = '';
+            grid.forEach(row => {
+                row.forEach(char => {
+                    let cell = document.createElement('div');
+                    cell.className = 'cell';
+                    cell.style.fontFamily = selectedFont;
+                    cell.style.fontSize = fontSize;
+                    cell.textContent = char;
+                    gridElement.appendChild(cell);
+                });
+            });
+
+            wordListElement.style.fontFamily = selectedFont;
+            wordListElement.innerHTML = words.map(w => `<span class="word-item">${w}</span>`).join('');
+        }
+
+        function canPlace(grid, word, row, col, dir, size) {
+            let dr = [0, 1, 1][dir]; 
+            let dc = [1, 0, 1][dir]; 
+            if (row + dr * (word.length - 1) >= size || col + dc * (word.length - 1) >= size) return false;
+            for (let i = 0; i < word.length; i++) {
+                let r = row + i * dr;
+                let c = col + i * dc;
+                if (grid[r][c] !== '' && grid[r][c] !== word[i]) return false;
+            }
+            return true;
+        }
+
+        function placeWord(grid, word, row, col, dir) {
+            let dr = [0, 1, 1][dir];
+            let dc = [1, 0, 1][dir];
+            for (let i = 0; i < word.length; i++) {
+                grid[row + i * dr][col + i * dc] = word[i];
+            }
+        }
+    </script>
+</body>
+</html>
