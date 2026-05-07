@@ -13,6 +13,12 @@
             font-weight: normal;
             font-style: normal;
         }
+@font-face {
+    font-family: 'Trykkskrift';
+    src: url('trykkskrift.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
 
         @import url('https://fonts.googleapis.com/css2?family=Andika&display=swap');
 
@@ -100,6 +106,7 @@
             <div>
                 <label>Velg Font:</label>
                 <select id="font-family">
+                    <option value="'Trykkskrift', sans-serif">Trykkskrift</option>
                     <option value="'Skogstavskrift', cursive">Skogstavskrift</option>
                     <option value="'Andika', sans-serif">Andika</option>
                     <option value="'Courier New', Courier, monospace">Monospace</option>
