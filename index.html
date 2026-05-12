@@ -66,7 +66,7 @@
 
         .control-item {
             display: flex; align-items: center; justify-content: space-between;
-            background: var(--sidebar-item-bg); padding: 8px 10px; border-radius: 8px; 
+            background: var(--sidebar-item-bg); padding: 5px 10px; border-radius: 8px; 
             margin-bottom: 6px; font-size: 0.85rem;
         }
 
@@ -150,6 +150,70 @@ input#grid-size.invalid {
     letter-spacing: 2px;
 }
 
+/* HAMBURGER MENY-KNAPP */
+.menu-container {
+    position: relative;
+    margin-bottom: 10px;
+}
+
+.hamburger {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    cursor: pointer;
+    width: 20px;
+    padding: 5px;
+}
+
+.hamburger span {
+    display: block;
+    width: 100%;
+    height: 2px;
+    background-color: white;
+    border-radius: 1px;
+    transition: 0.3s;
+}
+
+/* SELVE MENYEN SOM KOMMER FREM */
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 25px;
+    left: 0;
+    background-color: #2c3e50;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 6px;
+    width: 200px;
+    z-index: 100;
+    box-shadow: 5px 5px 15px rgba(0,0,0,0.5);
+}
+
+.menu-icon {
+    width: 20px;          /* Størrelsen på bildet */
+    height: 20px;
+    margin-right: 10px;   /* Avstand fra bilde til tekst */
+    vertical-align: middle; /* Sentrerer bildet i forhold til teksten */
+    object-fit: contain;  /* Sørger for at bildet ikke blir strukket */
+    border-radius: 3px;   /* Valgfritt: runder av hjørnene på bildene litt */
+}
+.dropdown-menu a {
+    display: block;
+    color: white;
+    padding: 12px 15px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.dropdown-menu a:hover {
+    background-color: #34495e;
+}
+
+/* Viser menyen når man legger til klassen "show" via JS */
+.dropdown-menu.show {
+    display: block;
+}
+.sidebar h2 { margin: 0 0 15px 0; font-size: 1.1rem; text-align: center; text-transform: uppercase; }
         @media print {
             .sidebar { display: none !important; }
             body { background: white !important; height: auto; }
@@ -159,11 +223,35 @@ input#grid-size.invalid {
     </style>
 </head>
 <body>
-
 <div class="sidebar">
+    <div class="sidebar-header" style="display: flex; align-items: center; margin-bottom: 20px;">
+        
+        <div class="menu-container" style="margin-bottom: 0; margin-right: 15px;">
+            <div class="hamburger" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+    <div id="myDropdown" class="dropdown-menu">
+    <a href="https://77tor.github.io/gitter/" target="_blank">
+        <img src="gitter_02.png" class="menu-icon"> Gitter-ord
+    </a>
+    <a href="https://77tor.github.io/Silhuettord/" target="_blank">
+        <img src="silhuett-ord_05.png" class="menu-icon"> Silhuett-ord
+    </a>
+    <a href="https://77tor.github.io/ord-sok/" target="_blank">
+        <img src="ord-sok.png" class="menu-icon"> Ordsøk
+    </a>
+</div>
+        </div>
+
+        <h2 style="margin: 0; flex-grow: 1; text-align: center;">Ordsøk</h2>
+    </div>
+
     <textarea id="word-input" placeholder="Skriv ord her..."></textarea>
 
     <div class="sidebar-controls">
+
         <div class="control-item">
             <span>Størrelse (5-25)</span>
             <input type="number" id="grid-size" value="12" min="5" max="25" onchange="autoGenerate()">
@@ -405,6 +493,23 @@ function generatePuzzle() {
         let dr = [0, 1, 1][dir], dc = [1, 0, 1][dir];
         for (let i = 0; i < word.length; i++) grid[row + i * dr][col + i * dc] = word[i];
     }
+
+function toggleMenu() {
+    document.getElementById("myDropdown").classList.toggle("show");
+}
+
+// Lukker menyen hvis man klikker utenfor den
+window.onclick = function(event) {
+    if (!event.target.closest('.menu-container')) {
+        var dropdowns = document.getElementsByClassName("dropdown-menu");
+        for (var i = 0; i < dropdowns.length; i++) {
+            var openDropdown = dropdowns[i];
+            if (openDropdown.classList.contains('show')) {
+                openDropdown.classList.remove('show');
+            }
+        }
+    }
+}
 </script>
 </body>
 </html>
