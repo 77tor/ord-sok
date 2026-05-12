@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ordsøk</title>
     <link rel="icon" type="image/png" href="ord-sok.png">
-    <link rel="apple-touch-icon" href="ord-sok.png"
+    <link rel="apple-touch-icon" href="ord-sok.png">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
     <style>
@@ -40,61 +40,68 @@
             background-color: var(--main-bg); 
         }
 
+        /* ENDRINGER KUN I SIDEBAR FOR BÆRBAR PC */
         .sidebar {
-            width: 350px; background-color: var(--sidebar-bg); color: var(--sidebar-text);
-            padding: 20px; box-sizing: border-box; display: flex; flex-direction: column;
-            box-shadow: 4px 0 15px rgba(0,0,0,0.3); z-index: 10; overflow-y: auto;
+            width: 350px; min-width: 350px; 
+            background-color: var(--sidebar-bg); color: var(--sidebar-text);
+            padding: 15px; box-sizing: border-box; 
+            display: flex; flex-direction: column;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.3); z-index: 10; 
+            overflow-y: auto; /* Gjør at menyen kan scroller hvis skjermen er lav */
+            max-height: 100vh;
         }
 
         .sidebar-logo {
             width: 100%; display: flex; justify-content: center;
-            margin-bottom: 20px; padding-bottom: 15px; border-top: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 15px; padding-bottom: 10px; border-top: 1px solid rgba(255,255,255,0.1);
+            order: 10; /* Flytter logo til bunnen av sidebaren for å spare plass øverst */
         }
-        .sidebar-logo img { max-width: 100px; height: auto; }
+        .sidebar-logo img { max-width: 80px; height: auto; }
 
         textarea { 
-            width: 100%; height: 120px; padding: 12px; border-radius: 8px; border: none; 
-            margin-bottom: 20px; background-color: #ecf0f1; font-family: inherit; resize: none;
-            box-sizing: border-box; display: block;
+            width: 100%; height: 100px; padding: 12px; border-radius: 8px; border: none; 
+            margin-bottom: 15px; background-color: #ecf0f1; font-family: inherit; resize: none;
+            box-sizing: border-box; display: block; flex-shrink: 0;
         }
 
         .control-item {
             display: flex; align-items: center; justify-content: space-between;
-            background: var(--sidebar-item-bg); padding: 10px 12px; border-radius: 8px; 
-            margin-bottom: 8px; font-size: 0.9rem;
+            background: var(--sidebar-item-bg); padding: 8px 10px; border-radius: 8px; 
+            margin-bottom: 6px; font-size: 0.85rem;
         }
 
-        .switch { position: relative; display: inline-block; width: 40px; height: 20px; }
+        .switch { position: relative; display: inline-block; width: 36px; height: 18px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { 
             position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; 
             background-color: #ccc; transition: .4s; border-radius: 20px; 
         }
         .slider:before { 
-            position: absolute; content: ""; height: 14px; width: 14px; 
+            position: absolute; content: ""; height: 12px; width: 12px; 
             left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; 
         }
         input:checked + .slider { background-color: var(--btn-generate); }
-        input:checked + .slider:before { transform: translateX(20px); }
+        input:checked + .slider:before { transform: translateX(18px); }
 
         select, input[type="number"] {
-            background: #ecf0f1; border: none; border-radius: 4px; padding: 4px; font-size: 0.85rem; width: 90px;
+            background: #ecf0f1; border: none; border-radius: 4px; padding: 3px; font-size: 0.8rem; width: 80px;
         }
 
         .action-btn { 
-            width: 100%; padding: 12px; border-radius: 8px; border: none; 
-            font-weight: 600; cursor: pointer; margin-bottom: 8px; color: white; transition: 0.2s;
-            box-sizing: border-box;
+            width: 100%; padding: 10px; border-radius: 8px; border: none; 
+            font-weight: 600; cursor: pointer; margin-bottom: 6px; color: white; transition: 0.2s;
+            box-sizing: border-box; font-size: 0.85rem;
         }
         .action-btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
         
-        .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 5px; }
+        .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 2px; }
         
-        .btn-generate { background-color: var(--btn-generate); margin-top: 10px; }
+        .btn-generate { background-color: var(--btn-generate); margin-top: 5px; }
         .btn-reset { background-color: var(--btn-reset); }
         .btn-print { background-color: var(--btn-print); }
         .btn-download { background-color: var(--btn-download); }
 
+        /* ALT UNDER ER NØYAKTIG DIN KODE */
         .main-content { flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; align-items: center; padding: 40px; }
         #capture-area { background: white; padding: 40px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); width: fit-content; }
         
@@ -130,6 +137,19 @@
             page-break-before: always;
         }
 
+/* Ny stil for feilmelding i rutenett-størrelse */
+input#grid-size.invalid {
+    background-color: #ff7675;
+    color: white;
+    font-weight: bold;
+}
+#main-title {
+    font-size: 2.5rem;
+    color: #333;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
         @media print {
             .sidebar { display: none !important; }
             body { background: white !important; height: auto; }
@@ -141,8 +161,6 @@
 <body>
 
 <div class="sidebar">
-    
-    
     <textarea id="word-input" placeholder="Skriv ord her..."></textarea>
 
     <div class="sidebar-controls">
@@ -206,7 +224,6 @@
             <button class="action-btn btn-download" onclick="downloadFullImage()">LAST NED BILDE</button>
         </div>
     </div>
-<div class="sidebar-logo"><img src="ord_sok_01.png" alt="Logo"></div>
 </div>
 
 <div class="main-content">
@@ -214,8 +231,10 @@
         <img src="ord_sok_01.png" alt="Velkomstbilde" style="max-width: 400px; opacity: 0.3; filter: grayscale(100%);">
     </div>
 
-    <div id="capture-area" style="display: none;">
-        <div id="grid" class="grid-container"></div>
+<div id="capture-area" style="display: none;">
+    <h1 id="main-title" style="text-align: center; margin-top: 0; margin-bottom: 20px;">Ordsøk</h1>
+    
+    <div id="grid" class="grid-container"></div>
         <div id="word-list-container" style="margin-top:20px; text-align:center;">
             <h3 id="list-header">Finn disse ordene:</h3>
             <div id="word-list"></div>
@@ -246,11 +265,10 @@
         }
     }
 
-async function downloadFullImage() {
+    async function downloadFullImage() {
         const area = document.getElementById('capture-area');
         const btn = document.querySelector('.btn-download');
         
-        // Sjekk om det faktisk er noe å laste ned
         if (document.getElementById('grid').innerHTML === "") {
             alert("Du må generere et ordsøk først!");
             return;
@@ -264,12 +282,12 @@ async function downloadFullImage() {
                 scale: 2,
                 backgroundColor: "#ffffff",
                 logging: false,
-                useCORS: true // Lagt til for å håndtere bilder fra andre domener om nødvendig
+                useCORS: true
             });
             
             const link = document.createElement('a');
             link.download = 'ordsok_oppgave.png';
-            link.href = canvas.toDataURL('image/png'); // Her var feilen (toDataURL, ikke toURL)
+            link.href = canvas.toDataURL('image/png');
             link.click();
         } catch (e) {
             console.error(e);
@@ -280,13 +298,14 @@ async function downloadFullImage() {
         }
     }
 
-    function generatePuzzle() {
-        // VISNING: Skjul bilde og vis oppgaveområde
+function generatePuzzle() {
         document.getElementById('placeholder-image').style.display = 'none';
         document.getElementById('capture-area').style.display = 'block';
         
+        
         const rawInput = document.getElementById('word-input').value;
-        let size = parseInt(document.getElementById('grid-size').value) || 12;
+        const sizeInput = document.getElementById('grid-size');
+        let size = parseInt(sizeInput.value) || 12;
         
         const isUpper = document.getElementById('toggle-case').checked;
         const bothDirections = document.getElementById('toggle-direction').checked;
@@ -294,13 +313,13 @@ async function downloadFullImage() {
         const selectedFont = document.getElementById('font-family').value;
         const placementStyle = document.getElementById('placement-style').value;
         
-        // Splitter på komma og linjeskift
         let words = rawInput.split(/[\s,]+/).filter(w => w.length > 0)
                             .map(w => isUpper ? w.toUpperCase() : w.toLowerCase());
 
         if (words.length === 0) return;
 
         let grid = Array(size).fill().map(() => Array(size).fill(''));
+        let placedWords = [];
 
         words.forEach(word => {
             let wordToPlace = (bothDirections && Math.random() > 0.5) 
@@ -308,25 +327,47 @@ async function downloadFullImage() {
 
             let placed = false;
             let attempts = 0;
-            while (!placed && attempts < 400) {
-                let dir = (placementStyle === 'horizontal') ? 0 : (placementStyle === 'vertical' ? 1 : Math.floor(Math.random() * 3));
-                let r = Math.floor(Math.random() * size), c = Math.floor(Math.random() * size);
-                if (canPlace(grid, wordToPlace, r, c, dir, size)) {
-                    placeWord(grid, wordToPlace, r, c, dir);
-                    placed = true;
+
+            if (word.length <= size) {
+                while (!placed && attempts < 400) {
+                    let dir = (placementStyle === 'horizontal') ? 0 : (placementStyle === 'vertical' ? 1 : Math.floor(Math.random() * 3));
+                    let r = Math.floor(Math.random() * size), c = Math.floor(Math.random() * size);
+                    if (canPlace(grid, wordToPlace, r, c, dir, size)) {
+                        placeWord(grid, wordToPlace, r, c, dir);
+                        placed = true;
+                        placedWords.push(word);
+                    }
+                    attempts++;
                 }
-                attempts++;
             }
         });
+
+        if (placedWords.length < words.length) {
+            sizeInput.classList.add('invalid');
+        } else {
+            sizeInput.classList.remove('invalid');
+        }
 
         const cellSize = Math.min(40, Math.floor(580 / size));
         const activeAlphabet = isUpper ? ALPHA_UPPER : ALPHA_LOWER;
 
         document.getElementById('list-header').style.fontFamily = selectedFont;
+        document.getElementById('main-title').style.fontFamily = selectedFont;
         renderGrid('grid', grid, cellSize, selectedFont, false, activeAlphabet);
         renderGrid('solution-grid', grid, cellSize, selectedFont, true, activeAlphabet);
 
-        document.getElementById('word-list').innerHTML = words.map(w => `<span class="word-item" style="font-family:${selectedFont}">${w}</span>`).join('');
+        // --- NY LOGIKK FOR BREDDE PÅ ORDLISTE ---
+        const container = document.getElementById('word-list-container');
+        const gridWidth = size * cellSize;
+        container.style.width = gridWidth + "px";
+        container.style.marginLeft = "auto";
+        container.style.marginRight = "auto";
+        // ----------------------------------------
+
+        document.getElementById('word-list').innerHTML = placedWords.map(w => 
+            `<span class="word-item" style="font-family:${selectedFont}">${w}</span>`
+        ).join('');
+        
         document.getElementById('solution-section').style.display = showSolution ? 'flex' : 'none';
     }
 
