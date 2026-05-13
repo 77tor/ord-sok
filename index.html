@@ -9,79 +9,125 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
     <style>
-        /* FONTS */
-        @font-face {
-            font-family: 'Skogstavskrift';
-            src: url('skogstavskrift.otf') format('opentype');
-            font-weight: normal; font-style: normal;
-        }
-        @font-face {
-            font-family: 'Trykkskrift';
-            src: url('trykkskrift.otf') format('opentype');
-            font-weight: normal; font-style: normal;
-        }
-        @import url('https://fonts.googleapis.com/css2?family=Andika&display=swap');
+@font-face {
+        font-family: 'Skogstavskrift';
+        src: url('skogstavskrift.otf') format('opentype');
+        font-weight: normal; font-style: normal;
+    }
+    @font-face {
+        font-family: 'Trykkskrift';
+        src: url('trykkskrift.otf') format('opentype');
+        font-weight: normal; font-style: normal;
+    }
+    @import url('https://fonts.googleapis.com/css2?family=Andika&display=swap');
 
-        :root {
-            --sidebar-bg: #1e293b;
-            --sidebar-text: #ffffff;
-            --main-bg: #f0f2f5;
-            --btn-generate: #10b981;
-            --btn-reset: #ff7675;
-            --btn-print: #3b82f6;
-            --btn-download: #9b59b6;
-            --sidebar-item-bg: rgba(255, 255, 255, 0.1);
-            --grid-border: #333;
-        }
+    /* OPPDATERTE VARIABLER SOM MATCHER GITTER */
+    :root {
+        --vokal-farge: #ffcccc; 
+        --vokal-tekst: #e74c3c;
+        --konsonant-tekst: #2c3e50;
+        --konsonant-overskrift: #2980b9;
+        --alt-match: #27ae60;
+        --sidebar-bg: #243447;  /* Matchet med Gitter */
+        --item-bg: #2c3e50;      /* Matchet med Gitter */
+        --accent-green: #10b981; /* Matchet med Gitter */
+        --sidebar-text: #ffffff;
+        --main-bg: #f0f2f5;
+        
+        /* Spesifikke knapper for Ordsøk som nå følger paletten */
+        --btn-generate: var(--accent-green);
+        --btn-reset: #ff7675;    /* Matchet vokal-tekst for rød farge */
+        --btn-print: #2980b9;    /* Matchet konsonant-overskrift for blå farge */
+        --btn-download: #8e44ad; /* En lilla som passer inn i stilen */
+        --grid-border: #333;
+    }
 
-        body { 
-            font-family: 'Segoe UI', Tahoma, sans-serif; 
-            margin: 0; display: flex; height: 100vh; 
-            background-color: var(--main-bg); 
-        }
+    body { 
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+        margin: 0; 
+        display: flex; 
+        height: 100vh; 
+        background-color: var(--main-bg); 
+        color: #333;
+    }
 
-        /* ENDRINGER KUN I SIDEBAR FOR BÆRBAR PC */
-        .sidebar {
-            width: 350px; min-width: 350px; 
-            background-color: var(--sidebar-bg); color: var(--sidebar-text);
-            padding: 15px; box-sizing: border-box; 
-            display: flex; flex-direction: column;
-            box-shadow: 4px 0 15px rgba(0,0,0,0.3); z-index: 10; 
-            overflow-y: auto; /* Gjør at menyen kan scroller hvis skjermen er lav */
-            max-height: 100vh;
-        }
+    /* SIDEBAR - Oppdatert til Gitter-standard */
+    .sidebar {
+        width: 350px; 
+        min-width: 350px; 
+        background-color: var(--sidebar-bg); 
+        color: var(--sidebar-text);
+        padding: 15px; 
+        box-sizing: border-box; 
+        display: flex; 
+        flex-direction: column;
+        box-shadow: 4px 0 15px rgba(0,0,0,0.3); 
+        z-index: 10; 
+        overflow-y: auto;
+        max-height: 100vh;
+    }
 
-        .sidebar-logo {
-            width: 100%; display: flex; justify-content: center;
-            margin-bottom: 15px; padding-bottom: 10px; border-top: 1px solid rgba(255,255,255,0.1);
-            order: 10; /* Flytter logo til bunnen av sidebaren for å spare plass øverst */
-        }
-        .sidebar-logo img { max-width: 80px; height: auto; }
+    .sidebar-logo {
+        width: 100%; 
+        display: flex; 
+        justify-content: center;
+        margin-bottom: 20px; 
+        padding-bottom: 15px; 
+        border-bottom: 1px solid rgba(255,255,255,0.1); /* Endret fra top til bottom for Gitter-stil */
+    }
+    
+    .sidebar-logo img { 
+        max-width: 100px; 
+        height: auto; 
+        border-radius: 4px;
+    }
 
-        textarea { 
-            width: 100%; height: 100px; padding: 12px; border-radius: 8px; border: none; 
-            margin-bottom: 15px; background-color: #ecf0f1; font-family: inherit; resize: none;
-            box-sizing: border-box; display: block; flex-shrink: 0;
-        }
+    .sidebar h2 { 
+        margin: 0 0 15px 0; 
+        font-size: 1.1rem; 
+        text-align: center; 
+        text-transform: uppercase; 
+    }
 
-        .control-item {
-            display: flex; align-items: center; justify-content: space-between;
-            background: var(--sidebar-item-bg); padding: 5px 10px; border-radius: 8px; 
-            margin-bottom: 6px; font-size: 0.85rem;
-        }
+    textarea { 
+        width: 100%; 
+        height: 95px; 
+        padding: 10px; 
+        border-radius: 6px; 
+        border: none; 
+        font-family: inherit; 
+        font-size: 0.9rem; 
+        box-sizing: border-box; 
+        margin-bottom: 15px; 
+        background-color: #ecf0f1;
+        resize: none;
+    }
 
-        .switch { position: relative; display: inline-block; width: 36px; height: 18px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { 
-            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; 
-            background-color: #ccc; transition: .4s; border-radius: 20px; 
-        }
-        .slider:before { 
-            position: absolute; content: ""; height: 12px; width: 12px; 
-            left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; 
-        }
-        input:checked + .slider { background-color: var(--btn-generate); }
-        input:checked + .slider:before { transform: translateX(18px); }
+    /* KONTROLLER - Matchet med Gitter-stil */
+    .control-item {
+        display: flex; 
+        align-items: center; 
+        justify-content: space-between;
+        background: rgba(0,0,0,0.2); /* Bruker mørkere gjennomsiktighet som i Gitter */
+        padding: 5px 10px; 
+        border-radius: 8px; 
+        margin-bottom: 6px; 
+        font-size: 0.85rem;
+    }
+
+    /* SWITCHER - Matchet med Gitter */
+    .switch { position: relative; display: inline-block; width: 40px; height: 20px; flex-shrink: 0; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider { 
+        position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; 
+        background-color: #ccc; transition: .4s; border-radius: 20px; 
+    }
+    .slider:before { 
+        position: absolute; content: ""; height: 14px; width: 14px; 
+        left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; 
+    }
+    input:checked + .slider { background-color: var(--accent-green); }
+    input:checked + .slider:before { transform: translateX(20px); }
 
         select, input[type="number"] {
             background: #ecf0f1; border: none; border-radius: 4px; padding: 3px; font-size: 0.8rem; width: 80px;
@@ -225,33 +271,30 @@ input#grid-size.invalid {
 <body>
 <div class="sidebar">
     <div class="sidebar-header" style="display: flex; align-items: center; margin-bottom: 20px;">
-        
         <div class="menu-container" style="margin-bottom: 0; margin-right: 15px;">
             <div class="hamburger" onclick="toggleMenu()">
                 <span></span>
                 <span></span>
                 <span></span>
             </div>
-    <div id="myDropdown" class="dropdown-menu">
-    <a href="https://77tor.github.io/gitter/" target="_self">
-        <img src="gitter_02.png" class="menu-icon"> Gitter-ord
-    </a>
-    <a href="https://77tor.github.io/Silhuettord/" target="_self">
-        <img src="silhuett-ord_05.png" class="menu-icon"> Silhuett-ord
-    </a>
-    <a href="https://77tor.github.io/ord-sok/" target="_self">
-        <img src="ord-sok.png" class="menu-icon"> Ordsøk
-    </a>
-</div>
+            <div id="myDropdown" class="dropdown-menu">
+                <a href="https://77tor.github.io/gitter/" target="_self">
+                    <img src="gitter_02.png" class="menu-icon"> Gitter-ord
+                </a>
+                <a href="https://77tor.github.io/Silhuettord/" target="_self">
+                    <img src="silhuett-ord_05.png" class="menu-icon"> Silhuett-ord
+                </a>
+                <a href="https://77tor.github.io/ord-sok/" target="_self">
+                    <img src="ord-sok.png" class="menu-icon"> Ordsøk
+                </a>
+            </div>
         </div>
-
         <h2 style="margin: 0; flex-grow: 1; text-align: center;">Ordsøk</h2>
     </div>
 
     <textarea id="word-input" placeholder="Skriv ord her..."></textarea>
 
     <div class="sidebar-controls">
-
         <div class="control-item">
             <span>Størrelse (5-25)</span>
             <input type="number" id="grid-size" value="12" min="5" max="25" onchange="autoGenerate()">
@@ -260,12 +303,12 @@ input#grid-size.invalid {
         <div class="control-item">
             <span>Font</span>
             <select id="font-family" onchange="autoGenerate()">
-                    <option value="'Trykkskrift', sans-serif">Trykkskrift</option>
-                    <option value="'Skogstavskrift', cursive">Skogstavskrift</option>
-                    <option value="'Andika', sans-serif">Andika</option>
-                    <option value="'Courier New', Courier, monospace">Monospace</option>
-                    <option value="'Comic Sans MS', cursive">Comic Sans</option>
-                    <option value="Arial, sans-serif">Arial</option>
+                <option value="'Trykkskrift', sans-serif">Trykkskrift</option>
+                <option value="'Skogstavskrift', cursive">Skogstavskrift</option>
+                <option value="'Andika', sans-serif">Andika</option>
+                <option value="'Courier New', Courier, monospace">Monospace</option>
+                <option value="'Comic Sans MS', cursive">Comic Sans</option>
+                <option value="Arial, sans-serif">Arial</option>
             </select>
         </div>
 
@@ -304,25 +347,26 @@ input#grid-size.invalid {
     </div>
 
     <div style="margin-top: 10px;">
-        <button class="action-btn btn-generate" onclick="generatePuzzle()">LAG ORDSØK</button>
-        <button class="action-btn btn-reset" onclick="resetForm()">NULLSTILL</button>
+        <div class="main-row">
+            <button class="action-btn btn-generate" onclick="generatePuzzle()">LAG ORDSØK</button>
+            <button class="action-btn btn-reset" onclick="resetForm()">NULLSTILL</button>
+        </div>
         
         <div class="btn-row">
             <button class="action-btn btn-print" onclick="window.print()">SKRIV UT</button>
             <button class="action-btn btn-download" onclick="downloadFullImage()">LAST NED BILDE</button>
         </div>
     </div>
-</div>
-
+</div> 
 <div class="main-content">
     <div id="placeholder-image" style="display: flex; justify-content: center; align-items: center; width: 100%; height: 100%;">
         <img src="ord_sok_01.png" alt="Velkomstbilde" style="max-width: 400px; opacity: 0.3; filter: grayscale(100%);">
-    </div>
+    </div> 
 
-<div id="capture-area" style="display: none;">
-    <h1 id="main-title" style="text-align: center; margin-top: 0; margin-bottom: 20px;">Ordsøk</h1>
-    
-    <div id="grid" class="grid-container"></div>
+    <div id="capture-area" style="display: none;">
+        <h1 id="main-title" style="text-align: center; margin-top: 0; margin-bottom: 20px;">Ordsøk</h1>
+        
+        <div id="grid" class="grid-container"></div>
         <div id="word-list-container" style="margin-top:20px; text-align:center;">
             <h3 id="list-header">Finn disse ordene:</h3>
             <div id="word-list"></div>
@@ -333,6 +377,7 @@ input#grid-size.invalid {
         <h2 style="text-align: center; margin-bottom: 20px;">Fasit</h2>
         <div id="solution-grid" class="grid-container"></div>
     </div>
+
 </div>
 
 <script>
@@ -344,14 +389,31 @@ input#grid-size.invalid {
         if (input.length > 0) generatePuzzle();
     }
 
-    function resetForm() { 
-        if(confirm("Nullstille alt?")) {
-            document.getElementById('word-input').value = "";
-            document.getElementById('placeholder-image').style.display = 'flex';
-            document.getElementById('capture-area').style.display = 'none';
-            document.getElementById('solution-section').style.display = 'none';
-        }
+function resetForm() { 
+    if(confirm("Nullstille alt?")) {
+        // 1. Tøm tekstfeltet
+        document.getElementById('word-input').value = "";
+
+        // 2. Sett dropdown-menyer og tallfelt til default
+        document.getElementById('grid-size').value = "12";
+        document.getElementById('font-family').selectedIndex = 0; // Velger første font (Trykkskrift)
+        document.getElementById('placement-style').selectedIndex = 0; // Velger "Alle veier"
+
+        // 3. Sett brytere (checkboxes) til av (false)
+        document.getElementById('toggle-case').checked = false;
+        document.getElementById('toggle-direction').checked = false;
+        document.getElementById('toggle-solution').checked = false;
+
+        // 4. Vis velkomstbildet og skjul oppgave/fasit
+        document.getElementById('placeholder-image').style.display = 'flex';
+        document.getElementById('capture-area').style.display = 'none';
+        document.getElementById('solution-section').style.display = 'none';
+        
+        // Valgfritt: Hvis du vil tømme selve ordsøket som ble generert
+        document.getElementById('grid').innerHTML = "";
+        document.getElementById('word-list').innerHTML = "";
     }
+}
 
     async function downloadFullImage() {
         const area = document.getElementById('capture-area');
