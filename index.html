@@ -9,7 +9,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
     <style>
-@font-face {
+    @font-face {
         font-family: 'Skogstavskrift';
         src: url('skogstavskrift.otf') format('opentype');
         font-weight: normal; font-style: normal;
@@ -21,24 +21,22 @@
     }
     @import url('https://fonts.googleapis.com/css2?family=Andika&display=swap');
 
-    /* OPPDATERTE VARIABLER SOM MATCHER GITTER */
     :root {
         --vokal-farge: #ffcccc; 
         --vokal-tekst: #e74c3c;
         --konsonant-tekst: #2c3e50;
         --konsonant-overskrift: #2980b9;
         --alt-match: #27ae60;
-        --sidebar-bg: #243447;  /* Matchet med Gitter */
-        --item-bg: #2c3e50;      /* Matchet med Gitter */
-        --accent-green: #27ae60; /* Matchet med Gitter */
+        --sidebar-bg: #243447;  
+        --item-bg: #2c3e50;      
+        --accent-green: #27ae60; 
         --sidebar-text: #ffffff;
         --main-bg: #f0f2f5;
         
-        /* Spesifikke knapper for Ordsøk som nå følger paletten */
         --btn-generate: var(--accent-green);
-        --btn-reset: #ff7675;    /* Matchet vokal-tekst for rød farge */
-        --btn-print: #2980b9;    /* Matchet konsonant-overskrift for blå farge */
-        --btn-download: #9b59b6; /* En lilla som passer inn i stilen */
+        --btn-reset: #ff7675;    
+        --btn-print: #2980b9;    
+        --btn-download: #9b59b6; 
         --grid-border: #333;
     }
 
@@ -49,9 +47,9 @@
         height: 100vh; 
         background-color: var(--main-bg); 
         color: #333;
+        overflow: hidden;
     }
 
-    /* SIDEBAR - Oppdatert til Gitter-standard */
     .sidebar {
         width: 350px; 
         min-width: 350px; 
@@ -73,7 +71,7 @@
         justify-content: center;
         margin-bottom: 20px; 
         padding-bottom: 15px; 
-        border-bottom: 1px solid rgba(255,255,255,0.1); /* Endret fra top til bottom for Gitter-stil */
+        border-bottom: 1px solid rgba(255,255,255,0.1); 
     }
     
     .sidebar-logo img { 
@@ -103,19 +101,17 @@
         resize: none;
     }
 
-    /* KONTROLLER - Matchet med Gitter-stil */
     .control-item {
         display: flex; 
         align-items: center; 
         justify-content: space-between;
-        background: rgba(0,0,0,0.2); /* Bruker mørkere gjennomsiktighet som i Gitter */
+        background: rgba(0,0,0,0.2); 
         padding: 10px 12px; 
         border-radius: 8px; 
         margin-bottom: 6px; 
         font-size: 0.9rem;
     }
 
-    /* SWITCHER - Matchet med Gitter */
     .switch { position: relative; display: inline-block; width: 40px; height: 20px; flex-shrink: 0; }
     .switch input { opacity: 0; width: 0; height: 0; }
     .slider { 
@@ -129,162 +125,295 @@
     input:checked + .slider { background-color: var(--accent-green); }
     input:checked + .slider:before { transform: translateX(20px); }
 
-        select, input[type="number"] {
-            background: #ecf0f1; border: none; border-radius: 4px; padding: 3px; font-size: 0.8rem; width: 80px;
-        }
+    select, input[type="number"] {
+        background: #ecf0f1; border: none; border-radius: 4px; padding: 5px; font-size: 0.8rem; width: 160px;
+    }
 
-.action-btn { 
-    width: 100%; 
-    padding: 10px; 
-    border-radius: 8px; 
-    border: none; 
-    font-weight: 600; 
-    cursor: pointer; 
-    /* Fjern margin-bottom herfra hvis du vil styre det via rader */
-    margin-bottom: 0; 
-    color: white; 
-    transition: 0.2s;
-    box-sizing: border-box; 
-    font-size: 0.85rem;
-    display: flex;         /* Lagt til for å sentrere tekst perfekt */
-    align-items: center;   /* Lagt til */
-    justify-content: center; /* Lagt til */
+    .action-btn { 
+        width: 100%; 
+        padding: 10px; 
+        border-radius: 8px; 
+        border: none; 
+        font-weight: 600; 
+        cursor: pointer; 
+        margin-bottom: 0; 
+        color: white; 
+        transition: 0.2s;
+        box-sizing: border-box; 
+        font-size: 0.85rem;
+        display: flex;         
+        align-items: center;   
+        justify-content: center; 
+    }
+    .action-btn:hover { filter: brightness(1.2); transform: translateY(-2px); }
+    
+    .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 2px; }
+    
+    .btn-generate { background-color: var(--btn-generate); }
+    .btn-reset { background-color: var(--btn-reset); }
+    .btn-print { background-color: var(--btn-print); }
+    .btn-download { background-color: var(--btn-download); }
+
+    .main-content { flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; align-items: center; padding: 40px 20px 20px 20px; height: 100vh; box-sizing: border-box; }
+    
+    /* SKALERING PÅ SKJERM */
+    .ark-skalering { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; transform: scale(0.75); transform-origin: center top; }
+    @media (max-height: 850px) { .ark-skalering { transform: scale(0.65); } }
+    @media (max-height: 720px) { .ark-skalering { transform: scale(0.52); } }
+
+    /* A4-ARK OPPRETTHOLDELSE */
+    #capture-area { 
+        position: relative;
+        background: white; 
+        padding: 18mm 18mm; 
+        padding-top: 75px !important;
+        width: 210mm; 
+        height: 297mm; 
+        min-width: 210mm;
+        min-height: 297mm;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15); 
+        box-sizing: border-box;
+        overflow: hidden;
+    }
+    
+    #main-title, .grid-container, #word-list-container { position: relative; z-index: 2; }
+
+    .grid-container { 
+        display: grid; 
+        background: white; 
+        margin: 20px auto 0 auto; 
+        border: 2px solid var(--grid-border); 
+        padding: 0;
+        width: fit-content;
+    }
+
+    .cell { 
+        border: 0.5px solid #ddd; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        user-select: none;
+        box-sizing: border-box;
+    }
+
+    .cell.solution { background-color: #e8f5e9; font-weight: bold; color: #10b981; border: 0.5px solid #10b981; }
+    .cell.empty { color: #ccc; }
+
+    .word-item { background: #f8f9fa; padding: 6px 12px; border: 1px solid #ddd; border-radius: 4px; margin: 5px; display: inline-block; font-size: 1rem; }
+
+    .solution-section {
+        position: relative;
+        background: white;
+        padding: 18mm 18mm;
+        padding-top: 75px !important;
+        width: 210mm;
+        height: 297mm;
+        min-width: 210mm;
+        min-height: 297mm;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        box-sizing: border-box;
+        margin-top: 40px;
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        page-break-before: always;
+        overflow: hidden;
+    }
+
+    input#grid-size.invalid {
+        background-color: #ff7675;
+        color: white;
+        font-weight: bold;
+    }
+    
+    #main-title {
+        font-size: 2.5rem;
+        color: #333;
+        text-align: center;
+        margin-top: 0;
+        margin-bottom: 20px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+
+/* Tvinger tekst til store bokstaver visuelt */
+.force-uppercase {
+    text-transform: uppercase !important;
 }
-        .action-btn:hover { filter: brightness(1.2); transform: translateY(-2px); }
+
+    /* HAMBURGER MENY */
+    .menu-container { position: relative; margin-bottom: 10px; }
+    .hamburger { display: flex; flex-direction: column; gap: 4px; cursor: pointer; width: 20px; padding: 5px; }
+    .hamburger span { display: block; width: 100%; height: 2px; background-color: white; border-radius: 1px; transition: 0.3s; }
+    .menu-item-disabled { opacity: 0.4; filter: grayscale(100%); pointer-events: none; cursor: default; }
+    
+    .dropdown-menu {
+        display: none; position: absolute; top: 25px; left: 0; background-color: #2c3e50;
+        border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; width: 200px; z-index: 100; box-shadow: 5px 5px 15px rgba(0,0,0,0.5);
+    }
+    .dropdown-menu.show { display: block; }
+    .dropdown-menu a { display: block; color: white; padding: 12px 15px; text-decoration: none; font-size: 0.9rem; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .dropdown-menu a:hover { background-color: #34495e; }
+    .menu-icon { width: 20px; height: 20px; margin-right: 10px; vertical-align: middle; object-fit: contain; border-radius: 3px; }
+
+    /* ==========================================================================
+       TEMA-STILER (RAMMER & FARGER FOR HVERT ENKELT TEMA)
+       ========================================================================== */
+    /* --- DE FIRE ORIGINALE TEMAENE --- */
+    .tema-standard { background-color: #ffffff; border: 4px solid #333; }
+    .tema-standard #main-title { color: #2b6cb0; }
+    .tema-standard .cell { border-color: #ddd; }
+
+    .tema-skog { background-color: #f0fff4; border: 5px solid #2f855a; }
+    .tema-skog #main-title { color: #2f855a; }
+    .tema-skog .cell { border-color: #9ae6b4; }
+
+    .tema-sol { background-color: #fffaf0; border: 5px solid #dd6b20; }
+    .tema-sol #main-title { color: #dd6b20; }
+    .tema-sol .cell { border-color: #fbd38d; }
+
+    .tema-minimal { background-color: #ffffff; border: 2px solid #000000; }
+    .tema-minimal #main-title { color: #000000; }
+    .tema-minimal .cell { border-color: #000000; }
+
+    /* --- DE NYERE BILDETEMAENE --- */
+    .theme-standard { background-color: #ffffff; border: 4px solid #333; }
+    .theme-standard #main-title { color: #333; }
+
+    .theme-host { background-color: #fffaf0; border: 6px double #d35400; }
+    .theme-host #main-title { color: #d35400; }
+
+    .theme-vinter { background-color: #f4f9ff; border: 4px dashed #3498db; }
+    .theme-vinter #main-title { color: #2980b9; }
+
+    .theme-var { background-color: #fafffa; border: 5px solid #2ecc71; }
+    .theme-var #main-title { color: #27ae60; }
+
+    .theme-sommer { background-color: #fffdf0; border: 5px solid #f1c40f; }
+    .theme-sommer #main-title { color: #f39c12; }
+
+    .theme-rommet { background-color: #f9f9fc; border: 5px solid #9b59b6; }
+    .theme-rommet #main-title { color: #8e44ad; }
+
+    .theme-fest { background-color: #fff9fe; border: 5px dotted #e91e63; }
+    .theme-fest #main-title { color: #ff4081; }
+
+    .theme-esc { background-color: #fff9ff; border: 5px solid #ff007f; }
+    .theme-esc #main-title { color: #673ab7; }
+
+    .theme-halloween { background-color: #fcf6f0; border: 5px solid #333; }
+    .theme-halloween #main-title { color: #d35400; }
+
+    .theme-jul { background-color: #fffbfb; border: 5px dashed #c0392b; }
+    .theme-jul #main-title { color: #c0392b; }
+
+    .theme-dino { background-color: #fcfdf5; border: 5px solid #795548; }
+    .theme-dino #main-title { color: #5d4037; }
+
+    .theme-pirat { background-color: #fbfbfc; border: 6px double #34495e; }
+    .theme-pirat #main-title { color: #2c3e50; }
+
+    .theme-sport { background-color: #f7fcf7; border: 5px solid #27ae60; }
+    .theme-sport #main-title { color: #27ae60; }
+
+    .theme-realfag { background-color: #fcfdfd; border: 4px solid #16a085; }
+    .theme-realfag #main-title { color: #16a085; }
+
+    /* ==========================================================================
+       TEMA BILDER-INTEGRASJON
+       ========================================================================== */
+    .theme-image { position: absolute; width: 110px; height: 110px; background-size: contain; background-repeat: no-repeat; background-position: center; opacity: 0.95; z-index: 5; transition: all 0.3s ease; display: none; }
+
+    #theme-img-1 { top: 25px; left: 20px; }       
+    #theme-img-2 { top: 25px; right: 20px; }      
+    #theme-img-3 { bottom: 25px; right: 20px; }    
+
+    /* Aktiverer visning for bildebaserte temaer */
+    .theme-dino .theme-image, .theme-esc .theme-image, .theme-fest .theme-image,
+    .theme-halloween .theme-image, .theme-host .theme-image, .theme-jul .theme-image,
+    .theme-realfag .theme-image, .theme-pirat .theme-image, .theme-sommer .theme-image,
+    .theme-sport .theme-image, .theme-rommet .theme-image, .theme-vinter .theme-image { display: block; }
+
+    .theme-dino #theme-img-1 { background-image: url('Bilder/dinosaur_01.png'); }
+    .theme-dino #theme-img-2 { background-image: url('Bilder/dinosaur_02.png'); }
+    .theme-dino #theme-img-3 { background-image: url('Bilder/dinosaur_03.png'); }
+
+    .theme-esc #theme-img-1 { background-image: url('Bilder/eurovisjon_01.png'); }
+    .theme-esc #theme-img-2 { background-image: url('Bilder/eurovisjon_02.png'); }
+    .theme-esc #theme-img-3 { background-image: url('Bilder/eurovisjon_03.png'); }
+
+    .theme-fest #theme-img-1 { background-image: url('Bilder/fest_01.png'); }
+    .theme-fest #theme-img-2 { background-image: url('Bilder/fest_02.png'); }
+    .theme-fest #theme-img-3 { background-image: url('Bilder/fest_03.png'); }
+
+    .theme-halloween #theme-img-1 { background-image: url('Bilder/halloween_01.png'); }
+    .theme-halloween #theme-img-2 { background-image: url('Bilder/halloween_02.png'); }
+    .theme-halloween #theme-img-3 { background-image: url('Bilder/halloween_03.png'); }
+
+    .theme-host #theme-img-1 { background-image: url('Bilder/host_01.png'); }
+    .theme-host #theme-img-2 { background-image: url('Bilder/host_02.png'); }
+    .theme-host #theme-img-3 { background-image: url('Bilder/host_03.png'); }
+
+    .theme-jul #theme-img-1 { background-image: url('Bilder/jul_01.png'); }
+    .theme-jul #theme-img-2 { background-image: url('Bilder/jul_02.png'); }
+    .theme-jul #theme-img-3 { background-image: url('Bilder/jul_03.png'); }
+
+    .theme-realfag #theme-img-1 { background-image: url('Bilder/naturfag_01.png'); }
+    .theme-realfag #theme-img-2 { background-image: url('Bilder/naturfag_02.png'); }
+    .theme-realfag #theme-img-3 { background-image: url('Bilder/naturfag_03.png'); }
+
+    .theme-pirat #theme-img-1 { background-image: url('Bilder/sjorover_01.png'); }
+    .theme-pirat #theme-img-2 { background-image: url('Bilder/sjorover_02.png'); }
+    .theme-pirat #theme-img-3 { background-image: url('Bilder/sjorover_03.png'); }
+
+    .theme-sommer #theme-img-1 { background-image: url('Bilder/sommer_01.png'); }
+    .theme-sommer #theme-img-2 { background-image: url('Bilder/sommer_02.png'); }
+    .theme-sommer #theme-img-3 { background-image: url('Bilder/sommer_03.png'); }
+
+    .theme-sport #theme-img-1 { background-image: url('Bilder/sport_01.png'); }
+    .theme-sport #theme-img-2 { background-image: url('Bilder/sport_02.png'); }
+    .theme-sport #theme-img-3 { background-image: url('Bilder/sport_03.png'); }
+
+    .theme-rommet #theme-img-1 { background-image: url('Bilder/verdensrommet_01.png'); }
+    .theme-rommet #theme-img-2 { background-image: url('Bilder/verdensrommet_02.png'); }
+    .theme-rommet #theme-img-3 { background-image: url('Bilder/verdensrommet_03.png'); }
+
+    .theme-vinter #theme-img-1 { background-image: url('Bilder/vinter_01.png'); }
+    .theme-vinter #theme-img-2 { background-image: url('Bilder/vinter_02.png'); }
+    .theme-vinter #theme-img-3 { background-image: url('Bilder/vinter_03.png'); }
+
+/* ==========================================================================
+       9. STRICT PRINT-STYLING (Perfekt sentrert A4 uten forskyvning)
+       ========================================================================== */
+    @media print {
+        @page { size: A4 portrait; margin: 0; }
+        html, body { width: 210mm; height: 297mm; background: white !important; overflow: visible !important; }
+        .sidebar { display: none !important; }
+        .main-content { padding: 0 !important; height: auto !important; width: 210mm !important; display: block !important; overflow: visible !important; }
         
-        .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 2px; }
+        .ark-skalering { 
+            display: block !important; 
+            width: 210mm !important; 
+            height: auto !important; 
+            /* Skalerer ned 4% og dytter arket 6mm ned for perfekt vertikal sentrering */
+            transform: scale(0.96) translateY(6mm) !important; 
+            transform-origin: top center !important; 
+        }
         
-        .btn-generate { background-color: var(--btn-generate); }
-        .btn-reset { background-color: var(--btn-reset); }
-        .btn-print { background-color: var(--btn-print); }
-        .btn-download { background-color: var(--btn-download); }
-
-        /* ALT UNDER ER NØYAKTIG DIN KODE */
-        .main-content { flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; align-items: center; padding: 40px; }
-        #capture-area { background: white; padding: 40px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); width: fit-content; }
-        
-        .grid-container { 
-            display: grid; 
-            background: white; 
-            margin-top: 20px; 
-            border: 2px solid var(--grid-border); 
-            padding: 0;
-            width: fit-content;
+        #capture-area, .solution-section { 
+            box-shadow: none !important; 
+            padding: 18mm 18mm !important; 
+            padding-top: 75px !important;
+            width: 210mm !important; 
+            height: 297mm !important; 
+            margin: 0 auto 20px auto !important; 
+            float: none !important; 
+            -webkit-print-color-adjust: exact !important; 
+            print-color-adjust: exact !important; 
         }
-
-        .cell { 
-            border: 0.5px solid #ddd; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            user-select: none;
-            box-sizing: border-box;
-        }
-
-        .cell.solution { background-color: #e8f5e9; font-weight: bold; color: #10b981; border: 0.5px solid #10b981; }
-        .cell.empty { color: #ccc; }
-
-        .word-item { background: #f8f9fa; padding: 6px 12px; border: 1px solid #ddd; border-radius: 4px; margin: 5px; display: inline-block; font-size: 1rem; }
-
-        .solution-section {
-            margin-top: 40px;
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-            page-break-before: always;
-        }
-
-/* Ny stil for feilmelding i rutenett-størrelse */
-input#grid-size.invalid {
-    background-color: #ff7675;
-    color: white;
-    font-weight: bold;
-}
-#main-title {
-    font-size: 2.5rem;
-    color: #333;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-}
-
-/* HAMBURGER MENY-KNAPP */
-.menu-container {
-    position: relative;
-    margin-bottom: 10px;
-}
-
-.hamburger {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    cursor: pointer;
-    width: 20px;
-    padding: 5px;
-}
-
-.hamburger span {
-    display: block;
-    width: 100%;
-    height: 2px;
-    background-color: white;
-    border-radius: 1px;
-    transition: 0.3s;
-}
-
-.menu-item-disabled {
-    opacity: 0.4;            /* Gjør alt 60% gjennomsiktig */
-    filter: grayscale(100%); /* Gjør bildet helt grått */
-    pointer-events: none;    /* Gjør at man ikke kan klikke på lenken */
-    cursor: default;         /* Viser vanlig pil i stedet for pekefinger */
-}
-/* SELVE MENYEN SOM KOMMER FREM */
-.dropdown-menu {
-    display: none;
-    position: absolute;
-    top: 25px;
-    left: 0;
-    background-color: #2c3e50;
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 6px;
-    width: 200px;
-    z-index: 100;
-    box-shadow: 5px 5px 15px rgba(0,0,0,0.5);
-}
-
-.menu-icon {
-    width: 20px;          /* Størrelsen på bildet */
-    height: 20px;
-    margin-right: 10px;   /* Avstand fra bilde til tekst */
-    vertical-align: middle; /* Sentrerer bildet i forhold til teksten */
-    object-fit: contain;  /* Sørger for at bildet ikke blir strukket */
-    border-radius: 3px;   /* Valgfritt: runder av hjørnene på bildene litt */
-}
-.dropdown-menu a {
-    display: block;
-    color: white;
-    padding: 12px 15px;
-    text-decoration: none;
-    font-size: 0.9rem;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
-}
-
-
-.dropdown-menu a:hover {
-    background-color: #34495e;
-}
-
-/* Viser menyen når man legger til klassen "show" via JS */
-.dropdown-menu.show {
-    display: block;
-}
-.sidebar h2 { margin: 0 0 15px 0; font-size: 1.1rem; text-align: center; text-transform: uppercase; }
-        @media print {
-            .sidebar { display: none !important; }
-            body { background: white !important; height: auto; }
-            .main-content { padding: 0; }
-            #capture-area { box-shadow: none !important; padding: 20px; }
-        }
+        .cell { border-color: #ccc !important; }
+        .cell.solution { background-color: #e8f5e9 !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    }
     </style>
 </head>
 <body>
@@ -297,21 +426,12 @@ input#grid-size.invalid {
                 <span></span>
             </div>
             <div id="myDropdown" class="dropdown-menu">
-    <a href="https://77tor.github.io/bingo/" target="_self">
-        <img src="bingo_02.png" class="menu-icon"> Bingo
-    </a>
-                <a href="https://77tor.github.io/gitter/" target="_self">
-                    <img src="gitter_02.png" class="menu-icon"> Gitter-ord
-                </a>
-                <a href="https://77tor.github.io/ord-sok/" target="_self" class="menu-item-disabled">
-                    <img src="ord-sok.png" class="menu-icon"> Ordsøk
-                </a>
-                <a href="https://77tor.github.io/Silhuettord/" target="_self">
-                    <img src="silhuett-ord_05.png" class="menu-icon"> Silhuett-ord
-                </a>
-                <a href="https://77tor.github.io/Stavelser/" target="_self">
-                    <img src="stavelser_01.png" class="menu-icon"> Stavelser
-                </a>
+                <a href="https://77tor.github.io/bingo/" target="_self"><img src="bingo_02.png" class="menu-icon"> Bingo</a>
+                <a href="https://77tor.github.io/gitter/" target="_self"><img src="gitter_02.png" class="menu-icon"> Gitter-ord</a>
+                <a href="https://77tor.github.io/les_og_skriv/" target="_self"><img src="les_skriv_03.png" class="menu-icon"> Les og skriv</a>
+                <a href="https://77tor.github.io/ord-sok/" target="_self" class="menu-item-disabled"><img src="ord-sok.png" class="menu-icon"> Ordsøk</a>
+                <a href="https://77tor.github.io/Silhuettord/" target="_self"><img src="silhuett-ord_05.png" class="menu-icon"> Silhuett-ord</a>
+                <a href="https://77tor.github.io/Stavelser/" target="_self"><img src="stavelser_01.png" class="menu-icon"> Stavelser</a>
             </div>
         </div>
         <h2 style="margin: 0; flex-grow: 1; text-align: center;">Ordsøk</h2>
@@ -321,13 +441,35 @@ input#grid-size.invalid {
 
     <div class="sidebar-controls">
         <div class="control-item">
+            <span>Velg tema</span>
+            <select id="theme-select" onchange="autoGenerate()">
+                <option value="tema-standard">Standard (Blå/Grå)</option>
+                <option value="tema-skog">Skog og Natur (Grønn)</option>
+                <option value="tema-sol">Solskinn (Gul/Oransje)</option>
+                <option value="tema-minimal">Minimalistisk (Svart/Hvit)</option>
+                <option value="theme-dino">Dinosaurer</option>
+                <option value="theme-esc">Eurovisjon</option>
+                <option value="theme-fest">Fest / Feiring</option>
+                <option value="theme-halloween">Halloween</option>
+                <option value="theme-host">Høst</option>
+                <option value="theme-jul">Jul</option>
+                <option value="theme-realfag">Naturfag / Realfag</option>
+                <option value="theme-pirat">Sjørøvere</option>
+                <option value="theme-sommer">Sommer</option>
+                <option value="theme-sport">Sport / Kamp</option>
+                <option value="theme-rommet">Verdensrommet</option>
+                <option value="theme-vinter">Vinter</option>
+            </select>
+        </div>
+
+        <div class="control-item">
             <span>Størrelse (5-25)</span>
             <input type="number" id="grid-size" value="12" min="5" max="25" onchange="autoGenerate()">
         </div>
 
         <div class="control-item">
             <span>Font</span>
-            <select id="font-family" onchange="autoGenerate()">
+            <select id="font-family">
                 <option value="'Trykkskrift', sans-serif">Trykkskrift</option>
                 <option value="'Skogstavskrift', cursive">Skogstavskrift</option>
                 <option value="'Andika', sans-serif">Andika</option>
@@ -349,7 +491,7 @@ input#grid-size.invalid {
         <div class="control-item">
             <span>STORE bokstaver</span>
             <label class="switch">
-                <input type="checkbox" id="toggle-case" onchange="autoGenerate()">
+                <input type="checkbox" id="toggle-case">
                 <span class="slider"></span>
             </label>
         </div>
@@ -365,43 +507,51 @@ input#grid-size.invalid {
         <div class="control-item">
             <span>Vis fasit</span>
             <label class="switch">
-                <input type="checkbox" id="toggle-solution" onchange="autoGenerate()">
+                <input type="checkbox" id="toggle-solution">
                 <span class="slider"></span>
             </label>
         </div>
     </div>
 
     <div style="margin-top: 10px;">
-<div class="main-row" style="display: flex; gap: 10px; margin-bottom: 10px;">
-    <button class="action-btn btn-generate" onclick="generatePuzzle()" style="flex: 2; white-space: nowrap;">LAG ORDSØK</button>
-    <button class="action-btn btn-reset" onclick="resetForm()" style="flex: 1; white-space: nowrap;">NULLSTILL</button>
-</div>
+        <div class="main-row" style="display: flex; gap: 10px; margin-bottom: 10px;">
+            <button class="action-btn btn-generate" onclick="generatePuzzle()" style="flex: 2; white-space: nowrap;">LAG ORDSØK</button>
+            <button class="action-btn btn-reset" onclick="resetForm()" style="flex: 1; white-space: nowrap;">NULLSTILL</button>
+        </div>
         <div class="btn-row" style="display: flex; gap: 10px; margin-bottom: 10px;">
             <button class="action-btn btn-print" onclick="window.print()">SKRIV UT</button>
             <button class="action-btn btn-download" onclick="downloadFullImage()">LAST NED BILDE</button>
         </div>
     </div>
 </div> 
+
 <div class="main-content">
     <div id="placeholder-image" style="display: flex; justify-content: center; align-items: center; width: 100%; height: 100%;">
         <img src="ord_sok_01.png" alt="Velkomstbilde" style="max-width: 400px; opacity: 0.3; filter: grayscale(100%);">
     </div> 
 
-    <div id="capture-area" style="display: none;">
-        <h1 id="main-title" style="text-align: center; margin-top: 0; margin-bottom: 20px;">Ordsøk</h1>
+    <div class="ark-skalering">
         
-        <div id="grid" class="grid-container"></div>
-        <div id="word-list-container" style="margin-top:20px; text-align:center;">
-            <h3 id="list-header">Finn disse ordene:</h3>
-            <div id="word-list"></div>
+        <div id="capture-area" class="tema-standard" style="display: none;">
+            <div id="theme-img-1" class="theme-image"></div>
+            <div id="theme-img-2" class="theme-image"></div>
+            <div id="theme-img-3" class="theme-image"></div>
+
+            <h1 id="main-title">Ordsøk</h1>
+            
+            <div id="grid" class="grid-container"></div>
+            <div id="word-list-container" style="margin-top:20px; text-align:center;">
+                <h3 id="list-header">Finn disse ordene:</h3>
+                <div id="word-list"></div>
+            </div>
         </div>
-    </div>
 
-    <div id="solution-section" class="solution-section" style="display: none;">
-        <h2 style="text-align: center; margin-bottom: 20px;">Fasit</h2>
-        <div id="solution-grid" class="grid-container"></div>
-    </div>
+        <div id="solution-section" class="solution-section" style="display: none;">
+            <h2 style="text-align: center; margin-bottom: 20px;">Fasit</h2>
+            <div id="solution-grid" class="grid-container"></div>
+        </div>
 
+    </div>
 </div>
 
 <script>
@@ -413,35 +563,40 @@ input#grid-size.invalid {
         if (input.length > 0) generatePuzzle();
     }
 
-function resetForm() { 
-    if(confirm("Nullstille alt?")) {
-        // 1. Tøm tekstfeltet
-        document.getElementById('word-input').value = "";
+    function resetForm() { 
+        if(confirm("Nullstille alt?")) {
+            document.getElementById('word-input').value = "";
+            document.getElementById('grid-size').value = "12";
+            document.getElementById('font-family').selectedIndex = 0; 
+            document.getElementById('placement-style').selectedIndex = 0; 
+            document.getElementById('theme-select').selectedIndex = 0; // Reset tema
 
-        // 2. Sett dropdown-menyer og tallfelt til default
-        document.getElementById('grid-size').value = "12";
-        document.getElementById('font-family').selectedIndex = 0; // Velger første font (Trykkskrift)
-        document.getElementById('placement-style').selectedIndex = 0; // Velger "Alle veier"
+            document.getElementById('toggle-case').checked = false;
+            document.getElementById('toggle-direction').checked = false;
+            document.getElementById('toggle-solution').checked = false;
 
-        // 3. Sett brytere (checkboxes) til av (false)
-        document.getElementById('toggle-case').checked = false;
-        document.getElementById('toggle-direction').checked = false;
-        document.getElementById('toggle-solution').checked = false;
-
-        // 4. Vis velkomstbildet og skjul oppgave/fasit
-        document.getElementById('placeholder-image').style.display = 'flex';
-        document.getElementById('capture-area').style.display = 'none';
-        document.getElementById('solution-section').style.display = 'none';
-        
-        // Valgfritt: Hvis du vil tømme selve ordsøket som ble generert
-        document.getElementById('grid').innerHTML = "";
-        document.getElementById('word-list').innerHTML = "";
+            document.getElementById('placeholder-image').style.display = 'flex';
+            document.getElementById('capture-area').style.display = 'none';
+            document.getElementById('solution-section').style.display = 'none';
+            
+            document.getElementById('grid').innerHTML = "";
+            document.getElementById('word-list').innerHTML = "";
+            
+            // Tilbakestill klasser på arket
+            document.getElementById('capture-area').className = "tema-standard";
+        }
     }
-}
 
-    async function downloadFullImage() {
+async function downloadFullImage() {
         const area = document.getElementById('capture-area');
+        const wrapper = document.querySelector('.ark-skalering');
         const btn = document.querySelector('.btn-download');
+        const title = document.getElementById('main-title');
+        
+        // Hent alle de tre temabildene
+        const img1 = document.getElementById('theme-img-1');
+        const img2 = document.getElementById('theme-img-2');
+        const img3 = document.getElementById('theme-img-3');
         
         if (document.getElementById('grid').innerHTML === "") {
             alert("Du må generere et ordsøk først!");
@@ -451,31 +606,65 @@ function resetForm() {
         btn.innerText = "GENERERER...";
         btn.disabled = true;
 
+        // 1. Lagre originale stiler
+        const originalWrapperStyle = wrapper.style.transform;
+        const originalAreaStyle = area.style.transform;
+        const originalTitleVisibility = title.style.visibility;
+        
+        // Lagre bildevisningen slik at vi kan tilbakestille den etterpå
+        const origImg1Display = img1.style.display;
+        const origImg2Display = img2.style.display;
+        const origImg3Display = img3.style.display;
+
+        // 2. Klargjør arket for eksport (skjul overskrift og problematiske lokalbilder)
+        wrapper.style.transform = "none";
+        area.style.transform = "none";
+        title.style.visibility = "hidden";
+        
+        img1.style.display = "none";
+        img2.style.display = "none";
+        img3.style.display = "none";
+
         try {
+            // En bitteliten pause så nettleseren rekker å skjule elementene
+            await new Promise(resolve => setTimeout(resolve, 50));
+
+            // 3. Generer canvas (nå helt uten eksterne bildekall som trigger sikkerhetssperrer)
             const canvas = await html2canvas(area, {
-                scale: 2,
+                scale: 2, 
                 backgroundColor: "#ffffff",
                 logging: false,
-                useCORS: true
+                useCORS: false,          
+                allowTaint: false
             });
             
+            // 4. Automatisk nedlasting
             const link = document.createElement('a');
             link.download = 'ordsok_oppgave.png';
             link.href = canvas.toDataURL('image/png');
             link.click();
+
         } catch (e) {
             console.error(e);
-            alert("Kunne ikke generere bilde. Prøv en annen nettleser.");
+            alert("Kunne ikke generere bilde.");
         } finally {
+            // 5. Sett absolutt alt tilbake til det normale for skjermvisningen
+            wrapper.style.transform = originalWrapperStyle;
+            area.style.transform = originalAreaStyle;
+            title.style.visibility = originalTitleVisibility;
+            
+            img1.style.display = origImg1Display;
+            img2.style.display = origImg2Display;
+            img3.style.display = origImg3Display;
+
             btn.innerText = "LAST NED BILDE";
             btn.disabled = false;
         }
     }
 
-function generatePuzzle() {
+    function generatePuzzle() {
         document.getElementById('placeholder-image').style.display = 'none';
         document.getElementById('capture-area').style.display = 'block';
-        
         
         const rawInput = document.getElementById('word-input').value;
         const sizeInput = document.getElementById('grid-size');
@@ -486,6 +675,11 @@ function generatePuzzle() {
         const showSolution = document.getElementById('toggle-solution').checked;
         const selectedFont = document.getElementById('font-family').value;
         const placementStyle = document.getElementById('placement-style').value;
+        
+        // OPPDATER TEMAKLASSER PÅ OPPGAVE OG FASIT
+        const chosenTheme = document.getElementById('theme-select').value;
+        document.getElementById('capture-area').className = chosenTheme;
+        document.getElementById('solution-section').className = "solution-section " + chosenTheme;
         
         let words = rawInput.split(/[\s,]+/).filter(w => w.length > 0)
                             .map(w => isUpper ? w.toUpperCase() : w.toLowerCase());
@@ -530,13 +724,11 @@ function generatePuzzle() {
         renderGrid('grid', grid, cellSize, selectedFont, false, activeAlphabet);
         renderGrid('solution-grid', grid, cellSize, selectedFont, true, activeAlphabet);
 
-        // --- NY LOGIKK FOR BREDDE PÅ ORDLISTE ---
         const container = document.getElementById('word-list-container');
         const gridWidth = size * cellSize;
         container.style.width = gridWidth + "px";
         container.style.marginLeft = "auto";
         container.style.marginRight = "auto";
-        // ----------------------------------------
 
         document.getElementById('word-list').innerHTML = placedWords.map(w => 
             `<span class="word-item" style="font-family:${selectedFont}">${w}</span>`
@@ -544,6 +736,55 @@ function generatePuzzle() {
         
         document.getElementById('solution-section').style.display = showSolution ? 'flex' : 'none';
     }
+
+// HÅNDTERING AV STORE/SMÅ BOKSTAVER UTEN Å GENERERE NYTT BRETT
+document.getElementById('toggle-case').addEventListener('change', function(e) {
+    const grid1 = document.getElementById('grid');
+    const grid2 = document.getElementById('solution-grid');
+    const wordList = document.getElementById('word-list');
+    
+    if (e.target.checked) {
+        grid1.classList.add('force-uppercase');
+        grid2.classList.add('force-uppercase');
+        wordList.classList.add('force-uppercase');
+    } else {
+        grid1.classList.remove('force-uppercase');
+        grid2.classList.remove('force-uppercase');
+        wordList.classList.remove('force-uppercase');
+    }
+});
+
+// HÅNDTERING AV VIS/SKJUL FASIT UTEN Å GENERERE NYTT BRETT
+document.getElementById('toggle-solution').addEventListener('change', function(e) {
+    const solutionSection = document.getElementById('solution-section');
+    if (solutionSection) {
+        solutionSection.style.display = e.target.checked ? 'flex' : 'none';
+    }
+});
+
+
+// ENDRE FONT UTEN Å GENERERE NYTT BRETT
+document.getElementById('font-family').addEventListener('change', function(e) {
+    const nyFont = e.target.value;
+    
+    // 1. Oppdater overskriftene
+    const mainTitle = document.getElementById('main-title');
+    const listHeader = document.getElementById('list-header');
+    if (mainTitle) mainTitle.style.fontFamily = nyFont;
+    if (listHeader) listHeader.style.fontFamily = nyFont;
+    
+    // 2. Oppdater alle bokstav-cellene i begge rutenettene
+    const alleCeller = document.querySelectorAll('.cell');
+    alleCeller.forEach(celle => {
+        celle.style.fontFamily = nyFont;
+    });
+    
+    // 3. Oppdater alle ordene i ordlisten under rutenettet
+    const alleOrdfelt = document.querySelectorAll('.word-item');
+    alleOrdfelt.forEach(ord => {
+        ord.style.fontFamily = nyFont;
+    });
+});
 
     function renderGrid(id, grid, size, font, isSolution, alphabet) {
         const el = document.getElementById(id);
@@ -580,22 +821,21 @@ function generatePuzzle() {
         for (let i = 0; i < word.length; i++) grid[row + i * dr][col + i * dc] = word[i];
     }
 
-function toggleMenu() {
-    document.getElementById("myDropdown").classList.toggle("show");
-}
+    function toggleMenu() {
+        document.getElementById("myDropdown").classList.toggle("show");
+    }
 
-// Lukker menyen hvis man klikker utenfor den
-window.onclick = function(event) {
-    if (!event.target.closest('.menu-container')) {
-        var dropdowns = document.getElementsByClassName("dropdown-menu");
-        for (var i = 0; i < dropdowns.length; i++) {
-            var openDropdown = dropdowns[i];
-            if (openDropdown.classList.contains('show')) {
-                openDropdown.classList.remove('show');
+    window.onclick = function(event) {
+        if (!event.target.closest('.menu-container')) {
+            var dropdowns = document.getElementsByClassName("dropdown-menu");
+            for (var i = 0; i < dropdowns.length; i++) {
+                var openDropdown = dropdowns[i];
+                if (openDropdown.classList.contains('show')) {
+                    openDropdown.classList.remove('show');
+                }
             }
         }
     }
-}
 </script>
 </body>
 </html>
